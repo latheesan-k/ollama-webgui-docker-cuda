@@ -63,9 +63,9 @@ To learn more, please visit the official project https://github.com/open-webui/o
 
 Most of the Nvidia RTX GPU are supported. The main factor that determines which models you can run is the available VRAM on your GPU.
 
-For example, RTX 4090 has 24 GB VRAM, which means you will be able to run a powerful reasoning model such as `32b` [deepseek-r1](https://ollama.com/library/deepseek-r1:32b) (on par with ChatGPT o1).
+For example, RTX 4090 has 24 GB VRAM, which means you will be able to run a powerful reasoning model such as `32b` [deepseek-r1](https://ollama.com/library/deepseek-r1:32b).
 
-This is possible because the 32 billion parameter model is quantized to Q4_K_M format (aka compression, small loss in quality to reduce the VRAM requirement), which results in model size being approximately `20gb`, which is roughly the same amount of VRAM you will need to fully offload the model weights into the GPU.
+This is possible because the 32 billion parameter model is quantized to Q4_K_M format (aka compression, small loss in quality to reduce the VRAM requirement). This results in model weights being approximately `20gb` in file size, which is approximately the same amount of VRAM needed. This can be fully offload to a 24 GB GPU VRAM.
 
 If you can fully offload the model weight into the GPU, the model will be performant using only the GPU. If you don't have enough VRAM, Ollama will use both the GPU VRAM and the system RAM through the CPU to run the model anyway, but it will be slow.
 
