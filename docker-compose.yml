@@ -1,0 +1,49 @@
+services:
+
+  ollama-backend:
+    volumes:
+      - ./data/ollama/ollama:/root/.ollama
+    container_name: ollama-backend
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: ollama/ollama:latest
+    ports:
+      - "7869:11434"
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    networks:
+      - ollama-docker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ollama-webui:
+    image: ghcr.io/open-webui/open-webui:cuda
+    container_name: ollama-webui
+    volumes:
+      - ./data/webui:/app/backend/data
+    depends_on:
+      - ollama-backend
+    ports:
+      - "8000:8080"
+    environment:
+      - OLLAMA_BASE_URLS=http://host.docker.internal:7869
+      - ENV=dev
+      - WEBUI_AUTH=False
+      - WEBUI_NAME=Ollama WebUI
+      - WEBUI_URL=http://localhost:8000
+      - WEBUI_SECRET_KEY=localhost
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+    networks:
+      - ollama-docker
+
+networks:
+  ollama-docker:
+    external: false
